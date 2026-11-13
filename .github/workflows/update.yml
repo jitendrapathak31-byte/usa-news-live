@@ -1,3 +1,4 @@
+
 name: Auto-Update USA News Every 30 Minutes
 
 on:
@@ -20,12 +21,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
 
-      - name: Install Python Dependencies
+      - name: Install Python Dependencies Directly
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install feedparser google-genai requests
 
       - name: Fetch Live RSS & Synthesize with Gemini API
         env:
