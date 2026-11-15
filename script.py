@@ -1,3 +1,5 @@
+
+    
 import os
 import re
 import json
@@ -62,7 +64,7 @@ You are the Executive Editor of a top-tier American national news organization.
 Transform the following raw RSS wire items into polished, 100% flawless American English journalism.
 
 Strict Requirements:
-1. Return ONLY valid JSON matching the exact schema requested.
+1. Return ONLY valid JSON matching the exact schema requested. No markdown formatting blocks around it if possible, or standard json.
 2. Provide 5 punchy, all-caps 'breaking_tickers'.
 3. Keep each article's exact 'id', 'category', 'url', 'image_url', and 'source'.
 4. Write a compelling 'title', a 2-sentence 'summary', and a 3-paragraph 'content' list.
@@ -102,7 +104,15 @@ Required JSON Output Format:
         )
     )
 
-    structured_data = json.loads(response.text)
+    # Clean response text in case markdown ticks are returned
+    response_text = response.text.strip()
+    if response_text.startswith("```json"):
+        response_text = response_text[7:]
+    if response_text.endswith("```"):
+        response_text = response_text[:-3]
+    response_text = response_text.strip()
+
+    structured_data = json.loads(response_text)
 
     for idx, article in enumerate(structured_data.get("articles", [])):
         img_url = article.get("image_url", "").strip()
